@@ -30,11 +30,11 @@ RUN su vscode -c "curl -LsSf https://astral.sh/uv/install.sh | sh"
 ENV PATH=/home/vscode/.local/bin:$PATH
 
 # uv tools
-RUN uv tool install pycodestyle \
-    && uv tool install flake8 \
-    && uv tool install pylint \
-    && uv tool install pyre-check \
-    && uv tool install pytest
+# RUN uv tool install pycodestyle \
+#     && uv tool install flake8 \
+#     && uv tool install pylint \
+#     && uv tool install pyre-check \
+#     && uv tool install pytest
 
 # ======================================================================
 # Install AWS CLI
