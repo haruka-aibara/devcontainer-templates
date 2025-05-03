@@ -19,7 +19,7 @@
         // Container Tools
         "ms-azuretools.vscode-containers",
         // Docker DX (Developer Experience)
-        "docker.docker",
+        //"docker.docker",
         // Docker
         "ms-azuretools.vscode-docker",
         // Ansible
