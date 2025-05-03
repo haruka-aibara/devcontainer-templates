@@ -1,0 +1,110 @@
+{
+    "name": "Development Environment",
+    "build": {
+      "dockerfile": "Dockerfile"
+    },
+    // Configure post-create commands
+    "postCreateCommand": "bash ./.devcontainer/post-create.sh",
+    // Mount AWS credentials and Git configuration from host machine in read-only mode for secure access within container
+    "mounts": [
+      "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,readonly",
+      "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,readonly"
+    ],
+    // Add VS Code extensions and settings
+    //"customizations": {
+    //  "vscode": {
+    //    "settings": {
+    //      "markdown.copyFiles.destination": {
+    //        "**/*.md": "assets/${documentBaseName}/"
+    //      },
+    //      "markdown.copyFiles.overwriteBehavior": "uniqueFilename",
+    //      "markdown.editor.drop.copyIntoWorkspace": "always",
+    //      "markdown.editor.filePaste.copyIntoWorkspace": "always",
+    //      "files.insertFinalNewline": true,
+    //      "[terraform]": {
+    //        "editor.defaultFormatter": "hashicorp.terraform",
+    //        "editor.formatOnSave": true,
+    //        "editor.formatOnSaveMode": "file"
+    //      },
+    //      "[terraform-vars]": {
+    //        "editor.defaultFormatter": "hashicorp.terraform",
+    //        "editor.formatOnSave": true,
+    //        "editor.formatOnSaveMode": "file",
+    //      },
+    //      "[python]": {
+    //        "editor.codeActionsOnSave": {
+    //          "source.fixAll": "explicit",
+    //          "source.organizeImports": "explicit"
+    //        },
+    //        "editor.defaultFormatter": "charliermarsh.ruff"
+    //      },
+    //      "ruff.lineLength": 120,
+    //      "ruff.lint.ignore": [
+    //        "F401"
+    //      ],
+    //      "ruff.lint.preview": true,
+    //      "ruff.lint.select": [
+    //        "C",
+    //        "E",
+    //        "F",
+    //        "W",
+    //        "I"
+    //      ],
+    //      "ruff.logFile": "~/logs/ruff.log",
+    //      "ruff.logLevel": "debug",
+    //      "ruff.nativeServer": "on",
+    //      "aws.suppressPrompts": {
+    //        "fileViewerEdit": true
+    //      },
+    //      "git.autofetch": true,
+    //      "git.enableSmartCommit": true,
+    //      "git.confirmSync": false,
+    //      "explorer.confirmDragAndDrop": false,
+    //      "python.analysis.typeCheckingMode": "strict",
+    //      "docker.extension.dockerEngineAvailabilityPrompt": false,
+    //      "dev.containers.executeInWSL": true,
+    //      "redhat.telemetry.enabled": true,
+    //    },
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          // HashiCorp Terraform
+          "hashicorp.terraform",
+          // Container Tools
+          "ms-azuretools.vscode-containers",
+          // Docker DX (Developer Experience)
+          "docker.docker",
+          // Ansible
+          "redhat.ansible",
+          // AWS Toolkit
+          "amazonwebservices.aws-toolkit-vscode",
+          // Markdown All in One
+          "yzhang.markdown-all-in-one",
+          // Markdown Preview Enhanced
+          "shd101wyy.markdown-preview-enhanced",
+          // Markdown Preview Mermaid Support
+          "bierner.markdown-mermaid",
+          // autoDocstring - Python Docstring Generator
+          "njpwerner.autodocstring",
+          // Mypy Type Checker
+          "ms-python.mypy-type-checker",
+          // Pylance
+          "ms-python.vscode-pylance",
+          // Pylint
+          "ms-python.pylint",
+          // Python
+          "ms-python.python",
+          // Python Debugger
+          "ms-python.debugpy",
+          // Rainbow CSV
+          "mechatroner.rainbow-csv",
+          // Ruff
+          "charliermarsh.ruff",
+          // YAML
+          "redhat.vscode-yaml"
+        ]
+      }
+    },
+    // Additional options
+    "remoteUser": "vscode"
+  }
