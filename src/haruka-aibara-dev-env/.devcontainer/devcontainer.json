@@ -99,6 +99,13 @@
       }
     }
   },
+  "features": {
+    "docker-from-docker": {
+      "version": "latest",
+      "moby": true,
+      "dockerDashComposeVersion": "v1"
+    }
+  },
   // Additional options
   "remoteUser": "vscode"
 }
