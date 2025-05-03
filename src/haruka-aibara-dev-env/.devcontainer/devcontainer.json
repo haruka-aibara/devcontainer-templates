@@ -20,6 +20,8 @@
         "ms-azuretools.vscode-containers",
         // Docker DX (Developer Experience)
         "docker.docker",
+        // Docker
+        "ms-azuretools.vscode-docker",
         // Ansible
         "redhat.ansible",
         // AWS Toolkit
