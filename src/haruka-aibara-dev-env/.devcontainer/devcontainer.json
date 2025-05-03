@@ -5,10 +5,10 @@
     },
     // Configure post-create commands
     "postCreateCommand": "bash ./.devcontainer/post-create.sh",
-    // Mount AWS credentials from host machine in read-only mode for secure access within container
-    // bind mount .aws dir
+    // Mount AWS credentials and Git configuration from host machine in read-only mode for secure access within container
     "mounts": [
-      "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,readonly"
+      "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,readonly",
+      "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,readonly"
     ],
     // Add VS Code extensions and settings
     //"customizations": {
