@@ -1,0 +1,14 @@
+{
+    "id": "haruka-aibara-dev-env",
+    "version": "0.1.0",
+    "name": "my devcontainer template",
+    "description": "my devcontainer template",
+    "platforms": [
+        "Python",
+        "Amazon Web Services",
+        "Ansibile",
+        "Terraform",
+        "Docker"
+    ],
+    "publisher": "haruka-aibara"
+}
