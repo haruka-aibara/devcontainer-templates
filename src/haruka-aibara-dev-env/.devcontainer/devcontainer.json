@@ -18,52 +18,52 @@
         "git.autofetch": true,
         "git.enableSmartCommit": true,
         "git.confirmSync": false,
-        // "markdown.copyFiles.destination": {
-        //   "**/*.md": "assets/${documentBaseName}/"
-        // },
-        // "markdown.copyFiles.overwriteBehavior": "uniqueFilename",
-        // "markdown.editor.drop.copyIntoWorkspace": "always",
-        // "markdown.editor.filePaste.copyIntoWorkspace": "always",
-        // "[terraform]": {
-        //   "editor.defaultFormatter": "hashicorp.terraform",
-        //   "editor.formatOnSave": true,
-        //   "editor.formatOnSaveMode": "file"
-        // },
-        // "[terraform-vars]": {
-        //   "editor.defaultFormatter": "hashicorp.terraform",
-        //   "editor.formatOnSave": true,
-        //   "editor.formatOnSaveMode": "file",
-        // },
-        // "[python]": {
-        //   "editor.codeActionsOnSave": {
-        //     "source.fixAll": "explicit",
-        //     "source.organizeImports": "explicit"
-        //   },
-        //   "editor.defaultFormatter": "charliermarsh.ruff"
-        // },
-        // "ruff.lineLength": 120,
-        // "ruff.lint.ignore": [
-        //   "F401"
-        // ],
-        // "ruff.lint.preview": true,
-        // "ruff.lint.select": [
-        //   "C",
-        //   "E",
-        //   "F",
-        //   "W",
-        //   "I"
-        // ],
-        // "ruff.logFile": "~/logs/ruff.log",
-        // "ruff.logLevel": "debug",
-        // "ruff.nativeServer": "on",
-        // "aws.suppressPrompts": {
-        //   "fileViewerEdit": true
-        // },
-        // "explorer.confirmDragAndDrop": false,
-        // "python.analysis.typeCheckingMode": "strict",
-        // "docker.extension.dockerEngineAvailabilityPrompt": false,
-        // "dev.containers.executeInWSL": true,
-        // "redhat.telemetry.enabled": true,
+        "markdown.copyFiles.destination": {
+          "**/*.md": "assets/${documentBaseName}/"
+        },
+        "markdown.copyFiles.overwriteBehavior": "uniqueFilename",
+        "markdown.editor.drop.copyIntoWorkspace": "always",
+        "markdown.editor.filePaste.copyIntoWorkspace": "always",
+        "[terraform]": {
+          "editor.defaultFormatter": "hashicorp.terraform",
+          "editor.formatOnSave": true,
+          "editor.formatOnSaveMode": "file"
+        },
+        "[terraform-vars]": {
+          "editor.defaultFormatter": "hashicorp.terraform",
+          "editor.formatOnSave": true,
+          "editor.formatOnSaveMode": "file",
+        },
+        "[python]": {
+          "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+          },
+          "editor.defaultFormatter": "charliermarsh.ruff"
+        },
+        "ruff.lineLength": 120,
+        "ruff.lint.ignore": [
+          "F401"
+        ],
+        "ruff.lint.preview": true,
+        "ruff.lint.select": [
+          "C",
+          "E",
+          "F",
+          "W",
+          "I"
+        ],
+        "ruff.logFile": "~/logs/ruff.log",
+        "ruff.logLevel": "debug",
+        "ruff.nativeServer": "on",
+        "aws.suppressPrompts": {
+          "fileViewerEdit": true
+        },
+        "explorer.confirmDragAndDrop": false,
+        "python.analysis.typeCheckingMode": "strict",
+        "docker.extension.dockerEngineAvailabilityPrompt": false,
+        "dev.containers.executeInWSL": true,
+        "redhat.telemetry.enabled": false,
       },
       "customizations": {
         "vscode": {
