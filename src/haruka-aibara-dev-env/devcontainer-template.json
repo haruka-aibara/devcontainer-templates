@@ -1,6 +1,6 @@
 {
     "id": "haruka-aibara-dev-env",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "name": "my devcontainer template",
     "description": "my devcontainer template",
     "platforms": [
