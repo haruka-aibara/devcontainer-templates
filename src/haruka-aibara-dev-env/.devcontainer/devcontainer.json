@@ -12,12 +12,10 @@
   ],
   "customizations": {
     "vscode": {
-      // 拡張機能リスト(拡張機能IDを指定)
+      // add extension-id
       "extensions": [
         // HashiCorp Terraform
         "hashicorp.terraform",
-        // Container Tools
-        // "ms-azuretools.vscode-containers",
         // Docker DX (Developer Experience)
         "docker.docker",
         // Docker
@@ -51,7 +49,7 @@
         // YAML
         "redhat.vscode-yaml"
       ],
-      // 本体設定
+      // remote settings
       "settings": {
         "files.insertFinalNewline": true,
         "git.autofetch": true,
@@ -99,13 +97,6 @@
       }
     }
   },
-  // "features": {
-  //   "docker-from-docker": {
-  //     "version": "latest",
-  //     "moby": true,
-  //     "dockerDashComposeVersion": "v2"
-  //   }
-  // },
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },

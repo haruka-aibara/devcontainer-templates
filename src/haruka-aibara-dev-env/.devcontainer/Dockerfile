@@ -50,3 +50,12 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     ansible-lint \
     # cleanup
     && apt-get clean -y && rm -rf /var/lib/apt/lists/* 
+
+# ======================================================================
+# Install minikube
+# ======================================================================
+# reference article
+# https://minikube.sigs.k8s.io/docs/start/?arch=%2Flinux%2Fx86-64%2Fstable%2Fbinary+download
+RUN curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64 \
+    && install minikube-linux-amd64 /usr/local/bin/minikube \
+    && rm minikube-linux-amd64
