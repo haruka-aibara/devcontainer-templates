@@ -2,6 +2,8 @@
 
 https://github.com/devcontainers/template-starter
 
+https://zenn.dev/tellernovel_inc/articles/7a14c416d5ddfd#fn-be58-2
+
 # Dev Containerテンプレート作成・公開: 最低限の手順
 
 ## 基本ステップ
