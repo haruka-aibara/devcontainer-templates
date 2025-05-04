@@ -17,5 +17,32 @@ tenv tf install latest-stable
 echo '# tenv' >> ~/.bashrc
 echo 'export PATH=$(tenv update-path):$PATH' >> ~/.bashrc
 
+# Create the custom HTML head file with AWS icon support
+cat > ~/.local/state/crossnote/head.html << 'EOL'
+<!-- The content below will be included at the end of the <head> element. -->
+<script type="text/javascript">
+   const configureMermaidIconPacks = () => {
+    window["mermaid"].registerIconPacks([
+      {
+        name: "logos",
+        loader: () =>
+          fetch("https://unpkg.com/@iconify-json/logos/icons.json").then(
+            (res) => res.json()
+          ),
+      },
+    ]);
+  };
+
+  // ref: https://stackoverflow.com/questions/39993676/code-inside-domcontentloaded-event-not-working
+  if (document.readyState !== 'loading') {
+    configureMermaidIconPacks();
+  } else {
+    document.addEventListener("DOMContentLoaded", () => {
+      configureMermaidIconPacks();
+    });
+  }
+</script>
+EOL
+
 # Source .bashrc to apply changes
 source ~/.bashrc
