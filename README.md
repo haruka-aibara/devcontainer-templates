@@ -1,54 +1,185 @@
-## reference articles
+# Haruka Aibara Development Environment
 
-https://github.com/devcontainers/template-starter
+A comprehensive DevContainer template for cloud infrastructure development, providing a consistent and secure development environment with pre-configured tools for AWS, Terraform, Ansible, Docker, and Python projects.
 
-https://zenn.dev/tellernovel_inc/articles/7a14c416d5ddfd#fn-be58-2
+## 🚀 Features
 
-# Dev Containerテンプレート作成・公開: 最低限の手順
+### 📦 Pre-installed Tools
 
-## 基本ステップ
+- **Infrastructure as Code**
+  - Terraform (managed by tenv for version control)
+  - AWS CLI v2
+  - Ansible & Ansible Lint
 
-1. テンプレートスターターをクローン or Fork
-   ```bash
-   git clone https://github.com/devcontainers/template-starter
+- **Container & Orchestration**
+  - Docker-in-Docker
+  - kubectl
+  - minikube
+
+- **Development Tools**
+  - Python with uv (modern package manager)
+  - Code quality tools (pylint, flake8, pycodestyle)
+  - Static type checking (pyre-check)
+  - Testing framework (pytest)
+  - npm
+
+- **Utilities**
+  - jq, curl, wget, htop, tree
+  - Git integration
+
+### 🔒 Security Features
+
+- Non-root user setup (runs as `vscode`)
+- Read-only credential mounting
+- Restricted container permissions
+- Secure Docker runtime options
+- Container health checks
+
+### 🧰 VS Code Integration
+
+- Optimized extensions for:
+  - Infrastructure as Code (Terraform, Ansible)
+  - Cloud Development (AWS)
+  - Python Development
+  - Docker Management
+  - Documentation (Markdown with Mermaid diagrams)
+
+- Configured linting, formatting, and type checking
+
+## 📋 Requirements
+
+- Docker
+- Visual Studio Code
+- [VS Code Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+- WSL2 with Ubuntu installed
+- Properly configured `.aws` and `.gitconfig` directories in your WSL2 Ubuntu home directory
+
+### WSL2 Setup Prerequisites
+
+Before using this DevContainer template, ensure:
+
+1. WSL2 is installed and configured with Ubuntu
+2. Your AWS credentials are set up in your WSL2 Ubuntu home directory:
+   ```
+   ~/.aws/credentials
+   ~/.aws/config
+   ```
+3. Your Git configuration is set up in your WSL2 Ubuntu home directory:
+   ```
+   ~/.gitconfig
    ```
 
-2. 最低限必要なファイル構成
+These files will be mounted into the container (read-only) to enable authentication with AWS services and maintain consistent Git commit identity.
+
+## 🔧 Usage
+
+### Getting Started with the Template
+
+This DevContainer template is published and ready to use directly through VS Code:
+
+1. Open VS Code
+2. Open Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`) 
+3. Type and select: `Dev Containers: Clone Repository in Container Volume...`
+4. Enter the URL of your repository or choose a repository from GitHub
+5. When prompted for a container configuration, select "Custom definition..."
+6. Enter the custom template ID:
    ```
-   src/
-   └── テンプレート名/
-       ├── devcontainer-template.json  # 必須
-       └── .devcontainer/
-           └── devcontainer.json       # 必須
+   ghcr.io/haruka-aibara/devcontainer-templates/haruka-aibara-dev-env:latest
    ```
+7. Follow the prompts to complete the setup
+8. VS Code will create a container volume, clone your repository, and open it within the development container
 
-3. devcontainer-template.jsonの最小構成
-   ```json
-   {
-     "id": "テンプレート名",
-     "version": "0.1.0",
-     "name": "表示名",
-     "description": "説明文",
-     "platforms": ["対応プラットフォーム"]
-   }
-   ```
+## 🛠 Working with the Development Environment
 
-## GitHubにおける重要設定
+Once your container is running, you'll have access to all the pre-configured tools:
 
-1. **Workflow権限の設定**
-   - リポジトリ設定 > Actions > General > Workflow permissions
-   - ✅ **Allow GitHub Actions to create and approve pull requests**
-
-2. テンプレート公開のワークフロー実行
-   - Actions > "Release Dev Container Templates & Generate Documentation"
-   - 「Run workflow」ボタンから実行
-
-## テンプレート使用方法
+After the container is running, all pre-configured tools are immediately available in the integrated terminal:
 
 ```bash
-devcontainer templates apply --template-id=ghcr.io/ユーザー名/devcontainer-templates/テンプレート名:latest
+echo "=================================================="
+echo "🔍 INSTALLED TOOLS VERIFICATION"
+echo "=================================================="
+
+# Function to print tool version with consistent formatting
+print_version() {
+  local tool=$1
+  local version_cmd=$2
+  
+  echo "📦 $tool version:"
+  echo "-------------------"
+  eval $version_cmd
+  echo ""
+}
+
+# AWS CLI
+print_version "AWS CLI" "aws --version"
+
+# Terraform and related tools
+print_version "Terraform" "terraform --version"
+print_version "tenv" "tenv --version"
+
+# Container tools
+print_version "Docker" "docker --version"
+print_version "Docker Compose" "docker compose version"
+
+# Kubernetes tools
+print_version "kubectl" "kubectl version --client"
+print_version "minikube" "minikube version"
+
+# Configuration management
+print_version "Ansible" "ansible --version"
+print_version "Ansible Lint" "ansible-lint --version"
+
+# Python and Python tools
+print_version "Python" "python3 --version"
+print_version "UV" "uv --version"
+
+# Installed Python packages
+echo "📦 Installed Python packages:"
+echo "-------------------"
+uv tool list
+echo ""
+
+# npm
+print_version "npm" "npm --version"
+
+# System tools
+print_version "jq" "jq --version"
+print_version "curl" "curl --version | head -n 1"
 ```
 
-## 注意事項
+### AWS Credentials
 
-- IDとsrc/以下のフォルダ名は一致させる必要あり
+AWS credentials from your host machine are automatically mounted (read-only) into the container. Verify with:
+
+```bash
+aws sts get-caller-identity
+```
+
+## 🛠 Customization
+
+### Modifying the Dockerfile
+
+Edit `.devcontainer/Dockerfile` to add additional tools or customize the environment.
+
+### Customizing VS Code Settings
+
+Adjust `.devcontainer/devcontainer.json` to:
+- Add/remove VS Code extensions
+- Change editor preferences
+- Modify container settings
+
+### Post-Creation Script
+
+The `.devcontainer/post-create.sh` script runs automatically after container creation. Modify it to:
+- Install additional packages
+- Configure environment variables
+- Set up project-specific dependencies
+
+## 📄 License
+
+MIT License - Feel free to use and modify this template for your projects.
+
+---
+
+_For more information, visit [https://github.com/haruka-aibara/my-devcontainer-template](https://github.com/haruka-aibara/my-devcontainer-template)_
