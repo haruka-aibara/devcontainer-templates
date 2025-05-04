@@ -85,7 +85,32 @@ if [ -d "$HOME/.aws" ]; then
     echo "Secured AWS credentials directory"
 fi
 
-echo "Post-create setup completed successfully!"
+# ======================================================================
+# 環境確認とバージョン表示
+# ======================================================================
+echo "ステップ 9: インストール済みツールのバージョンを確認中..."
+echo "Python バージョン:"
+python --version
 
-# Source .bashrc to apply changes
+echo "AWS CLI バージョン:"
+aws --version
+
+echo "Terraform バージョン:"
+terraform --version || echo "Terraformはまだ読み込まれていません。tenvを使用して必要なバージョンを選択してください。"
+
+echo "Ansible バージョン:"
+ansible --version
+
+echo "Docker バージョン:"
+docker --version
+
+echo "kubectl バージョン:"
+kubectl version --client
+
+echo "minikube バージョン:"
+minikube version
+
+echo "ポストクリエイトセットアップが正常に完了しました!"
+
+# .bashrcを読み込んで変更を適用
 source ~/.bashrc
