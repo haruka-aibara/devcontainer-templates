@@ -6,7 +6,7 @@ FROM mcr.microsoft.com/devcontainers/base:ubuntu
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
     # list installing packages
-    snap \
+    snapd \
     npm \
     unzip \
     zip \
@@ -30,13 +30,6 @@ RUN su vscode -c "curl -LsSf https://astral.sh/uv/install.sh | sh"
 
 # Make uv available in PATH
 ENV PATH=/home/vscode/.local/bin:$PATH
-
-# uv tools
-# RUN uv tool install pycodestyle \
-#     && uv tool install flake8 \
-#     && uv tool install pylint \
-#     && uv tool install pyre-check \
-#     && uv tool install pytest
 
 # ======================================================================
 # Install AWS CLI
