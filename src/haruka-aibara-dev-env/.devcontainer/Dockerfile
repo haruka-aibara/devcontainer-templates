@@ -1,5 +1,34 @@
 FROM mcr.microsoft.com/devcontainers/base:ubuntu
 
+
+# ======================================================================
+# Create non-root user(vscode) and set proper permissions
+# ======================================================================
+# reference article
+# https://www.docker.com/ja-jp/blog/understanding-the-docker-user-instruction/
+# Create vscode user with appropriate permissions for security
+# This is critical for container security best practices
+RUN mkdir -p /home/vscode/logs \
+    && chown -R vscode:vscode /home/vscode \
+    && chmod -R 750 /home/vscode
+
+# ======================================================================
+# Set non-root user for container execution
+# ======================================================================
+# Switch to non-root user for improved container security
+# This must match the remoteUser in devcontainer.json
+# Switch to the custom user
+USER vscode
+
+# Set the workdir
+WORKDIR /home/vscode
+
+# ======================================================================
+# Security Hardening
+# ======================================================================
+# Set no-new-privileges flag to prevent privilege escalation
+ENV DOCKER_OPTIONS="--security-opt=no-new-privileges"
+
 # ======================================================================
 # Install essential utility packages
 # ======================================================================

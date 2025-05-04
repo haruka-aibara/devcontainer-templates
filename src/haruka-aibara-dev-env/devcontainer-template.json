@@ -1,14 +1,21 @@
 {
-    "id": "haruka-aibara-dev-env",
-    "version": "0.2.3",
-    "name": "my devcontainer template",
-    "description": "my devcontainer template",
+    "id": "haruka-aibara-dev-environment",
+    "version": "0.3.0",
+    "name": "Haruka Aibara Development Environment",
+    "description": "A comprehensive development environment for AWS, Terraform, Ansible, Docker, and Python projects",
     "platforms": [
         "Python",
         "Amazon Web Services",
-        "Ansibile",
+        "Ansible",
         "Terraform",
         "Docker"
+    ],
+    "tags": [
+        "aws",
+        "terraform",
+        "ansible",
+        "python",
+        "docker"
     ],
     "publisher": "haruka-aibara"
 }
