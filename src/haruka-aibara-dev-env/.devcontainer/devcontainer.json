@@ -8,7 +8,7 @@
   // Mount AWS credentials and Git configuration from host machine in read-only mode for secure access within container
   "mounts": [
     "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,readonly",
-    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,readonly",
+    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,readonly"
   ],
   // Set the user for VS Code and its sub-processes (terminals, tasks, debugging)
   // This should match the USER directive in the Dockerfile
