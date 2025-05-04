@@ -179,7 +179,3 @@ The `.devcontainer/post-create.sh` script runs automatically after container cre
 ## 📄 License
 
 MIT License - Feel free to use and modify this template for your projects.
-
----
-
-_For more information, visit [https://github.com/haruka-aibara/my-devcontainer-template](https://github.com/haruka-aibara/my-devcontainer-template)_
