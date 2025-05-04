@@ -61,3 +61,12 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 RUN curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64 \
     && install minikube-linux-amd64 /usr/local/bin/minikube \
     && rm minikube-linux-amd64
+
+# ======================================================================
+# Install tenv
+# ======================================================================
+# reference article
+# https://github.com/tofuutils/tenv?tab=readme-ov-file#installation
+RUN LATEST_VERSION=$(curl --silent https://api.github.com/repos/tofuutils/tenv/releases/latest | jq -r .tag_name) \
+    && curl -O -L "https://github.com/tofuutils/tenv/releases/latest/download/tenv_${LATEST_VERSION}_amd64.deb" \
+    && dpkg -i "tenv_${LATEST_VERSION}_amd64.deb"

@@ -11,7 +11,6 @@ uv tool install pyre-check
 uv tool install pytest
 
 # Install tenv for Terraform version management
-sudo snap install tenv
 tenv tf install latest-stable
 
 # Add tenv to PATH in .bashrc
