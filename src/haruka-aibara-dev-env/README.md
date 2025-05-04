@@ -96,18 +96,56 @@ Once your container is running, you'll have access to all the pre-configured too
 After the container is running, all pre-configured tools are immediately available in the integrated terminal:
 
 ```bash
-# Verify AWS CLI
-aws --version
+echo "=================================================="
+echo "🔍 INSTALLED TOOLS VERIFICATION"
+echo "=================================================="
 
-# Use Terraform (managed by tenv)
-terraform --version
+# Function to print tool version with consistent formatting
+print_version() {
+  local tool=$1
+  local version_cmd=$2
+  
+  echo "📦 $tool version:"
+  echo "-------------------"
+  eval $version_cmd
+  echo ""
+}
 
-# Use Docker 
-docker --version
+# AWS CLI
+print_version "AWS CLI" "aws --version"
 
-# Use Python tools
-python --version
-uv --version
+# Terraform and related tools
+print_version "Terraform" "terraform --version"
+print_version "tenv" "tenv --version"
+
+# Container tools
+print_version "Docker" "docker --version"
+print_version "Docker Compose" "docker compose version"
+
+# Kubernetes tools
+print_version "kubectl" "kubectl version --client"
+print_version "minikube" "minikube version"
+
+# Configuration management
+print_version "Ansible" "ansible --version"
+print_version "Ansible Lint" "ansible-lint --version"
+
+# Python and Python tools
+print_version "Python" "python3 --version"
+print_version "UV" "uv --version"
+
+# Installed Python packages
+echo "📦 Installed Python packages:"
+echo "-------------------"
+uv tool list
+echo ""
+
+# npm
+print_version "npm" "npm --version"
+
+# System tools
+print_version "jq" "jq --version"
+print_version "curl" "curl --version | head -n 1"
 ```
 
 ### AWS Credentials
