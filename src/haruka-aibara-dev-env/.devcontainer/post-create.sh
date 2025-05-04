@@ -1,53 +1,76 @@
 #!/bin/bash
-# Ensure script exits immediately if a command fails 
-# and provides error messages on failure
+# =============================================================================
+# DevContainer Post-Creation Setup Script
+# =============================================================================
+# This script runs automatically after the container is created to set up
+# development tools, configure environments, and verify installations.
+# =============================================================================
+
+# Enable strict error handling to catch issues early
+# set -e: Exit immediately if any command exits with a non-zero status
+# trap: Display location of any errors to aid in troubleshooting
 set -e
 trap 'echo "ERROR: Command failed at line $LINENO"' ERR
 
 echo "Running post-create setup..."
 
-# ======================================================================
-# Install uv tools
-# ======================================================================
-echo "Step 1: Installing uv tools..."
-# Code style
-uv tool install pycodestyle
-uv tool install flake8
-uv tool install pylint
+# =============================================================================
+# Python Development Tools Installation
+# =============================================================================
+# Installing code quality and linting tools via uv (Python package manager)
+# uv provides faster, more reliable package installation than pip
+# =============================================================================
 
-# Static typing
-# Usage: Check at the project directory level with commands like
-# uvx --from pyre-check pyre --source-directory "project_dir" check
+echo "Step 1: Installing Python code quality tools..."
+# Code style and linting tools to enforce consistent code quality
+uv tool install pycodestyle   # Simple style checker against PEP 8
+uv tool install flake8        # Wrapper combining pycodestyle, pyflakes and complexity analysis
+uv tool install pylint        # Comprehensive static code analyzer with detailed reports
+
+# Static type checking tools installation
 echo "Step 2: Installing static typing tools..."
-uv tool install pyre-check
+# Type checking helps catch errors before runtime
+# Usage example: Check at the project directory level with:
+# uvx --from pyre-check pyre --source-directory "project_dir" check
+uv tool install pyre-check    # Fast, incremental type checker for Python
 
-# Testing
-# Usage:
-# uvx pytest test_xxx.py -v
+# Testing framework installation
 echo "Step 3: Installing testing tools..."
-uv tool install pytest
+# Automated testing ensures code reliability and prevents regressions
+# Usage example: Run tests with detailed output using:
+# uvx pytest test_xxx.py -v
+uv tool install pytest        # Feature-rich testing framework for Python
 
-# ======================================================================
-# tenv settings
-# ======================================================================
-# Install tenv for Terraform version management
-echo "Step 4: Configuring terraform environment..."
+# =============================================================================
+# Terraform Environment Configuration
+# =============================================================================
+# Setting up Terraform version management with tenv
+# This allows for switching between different Terraform versions as needed
+# =============================================================================
+
+echo "Step 4: Configuring Terraform environment..."
+# Install the latest stable version of Terraform
 tenv tf install latest-stable
 
-# Add tenv to PATH in .bashrc
-echo '# tenv' >> ~/.bashrc
+# Add tenv to PATH by updating .bashrc
+# This ensures the Terraform executable is available in all terminal sessions
+echo '# tenv - Terraform version management' >> ~/.bashrc
 echo 'export PATH=$(tenv update-path):$PATH' >> ~/.bashrc
 
-# ======================================================================
-# Use AWS icons in Markdown preview
-# ======================================================================
-# With this setup, you'll be able to use AWS icons in your Markdown preview, 
-# making your documentation more visually appealing and easier to understand when referencing AWS services.
+# =============================================================================
+# Markdown Enhancement for Documentation
+# =============================================================================
+# Configure Markdown preview to support AWS service icons in diagrams
+# This makes architecture diagrams more readable and professional
+# =============================================================================
+
 echo "Step 5: Setting up Markdown AWS icon support..."
-# Create the custom HTML head file with AWS icon support
-# reference article
-# https://qiita.com/take_me/items/83769d32c35e99b85ec8
+# Create required directory structure for crossnote custom configurations
 mkdir -p ~/.local/state/crossnote
+
+# Create custom HTML head file with AWS icon support for Markdown preview
+# This configuration allows the use of AWS service icons in Mermaid diagrams
+# Referenced article: https://qiita.com/take_me/items/83769d32c35e99b85ec8
 cat > ~/.local/state/crossnote/head.html << 'EOL'
 <!-- The content below will be included at the end of the <head> element. -->
 <script type="text/javascript">
@@ -63,6 +86,7 @@ cat > ~/.local/state/crossnote/head.html << 'EOL'
     ]);
   };
 
+  // Ensure the icon configuration runs after DOM is fully loaded
   // ref: https://stackoverflow.com/questions/39993676/code-inside-domcontentloaded-event-not-working
   if (document.readyState !== 'loading') {
     configureMermaidIconPacks();
@@ -74,30 +98,35 @@ cat > ~/.local/state/crossnote/head.html << 'EOL'
 </script>
 EOL
 
-# ======================================================================
-# 環境確認とバージョン表示
-# ======================================================================
-echo "ステップ 9: インストール済みツールのバージョンを確認中..."
+# =============================================================================
+# Environment Verification
+# =============================================================================
+# Verify tool installations and display version information
+# This confirms that all tools are correctly installed and available
+# =============================================================================
 
-echo "AWS CLI バージョン:"
+echo "Step 9: Verifying installed tool versions..."
+
+echo "AWS CLI version:"
 aws --version
 
-echo "Ansible バージョン:"
+echo "Ansible version:"
 ansible --version
 
-echo "Terraform バージョン:"
+echo "Terraform version:"
 terraform --version
 
-echo "Docker バージョン:"
+echo "Docker version:"
 docker --version
 
-echo "kubectl バージョン:"
+echo "kubectl version:"
 kubectl version --client
 
-echo "minikube バージョン:"
+echo "minikube version:"
 minikube version
 
-echo "ポストクリエイトセットアップが正常に完了しました!"
+echo "Post-creation setup completed successfully!"
 
-# .bashrcを読み込んで変更を適用
+# Apply changes to the current session by sourcing .bashrc
+# This makes newly configured tools available immediately without restarting the shell
 source ~/.bashrc
