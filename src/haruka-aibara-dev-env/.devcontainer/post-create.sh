@@ -75,31 +75,18 @@ cat > ~/.local/state/crossnote/head.html << 'EOL'
 EOL
 
 # ======================================================================
-# Security check
-# ======================================================================
-echo "Step 6: Running basic security check..."
-# Check for minimal permissions on sensitive files
-# This helps ensure proper security configurations
-if [ -d "$HOME/.aws" ]; then
-    chmod -R go-rwx $HOME/.aws
-    echo "Secured AWS credentials directory"
-fi
-
-# ======================================================================
 # 環境確認とバージョン表示
 # ======================================================================
 echo "ステップ 9: インストール済みツールのバージョンを確認中..."
-echo "Python バージョン:"
-python --version
 
 echo "AWS CLI バージョン:"
 aws --version
 
-echo "Terraform バージョン:"
-terraform --version || echo "Terraformはまだ読み込まれていません。tenvを使用して必要なバージョンを選択してください。"
-
 echo "Ansible バージョン:"
 ansible --version
+
+echo "Terraform バージョン:"
+terraform --version
 
 echo "Docker バージョン:"
 docker --version

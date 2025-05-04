@@ -4,19 +4,10 @@ FROM mcr.microsoft.com/devcontainers/base:ubuntu AS builder
 # システムの更新とツールのインストール - すべて1つのレイヤーで
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y --no-install-recommends \
-        npm \
         unzip \
-        zip \
-        gzip \
-        tar \
         curl \
-        wget \
-        htop \
-        tree \
         jq \
-        ca-certificates \
-        ansible \
-        ansible-lint \
+        # ca-certificates \
     # キャッシュのクリーンアップ
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
@@ -51,6 +42,7 @@ COPY --from=builder /usr/local/aws-cli /usr/local/aws-cli
 COPY --from=builder /usr/local/bin/minikube /usr/local/bin/minikube
 COPY --from=builder /usr/local/bin/kubectl /usr/local/bin/kubectl
 COPY --from=builder /usr/bin/tenv /usr/bin/tenv
+COPY --from=builder /usr/bin/terraform /usr/bin/terraform
 
 # 必要なシステムツールのインストール - 最小限のセットのみ
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
