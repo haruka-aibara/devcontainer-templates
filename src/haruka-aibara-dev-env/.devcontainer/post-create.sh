@@ -101,31 +101,65 @@ EOL
 # =============================================================================
 # Environment Verification
 # =============================================================================
-# Verify tool installations and display version information
+# Verify tool installations and display version information in a formatted way
 # This confirms that all tools are correctly installed and available
 # =============================================================================
 
-echo "Step 9: Verifying installed tool versions..."
+echo ""
+echo "=================================================="
+echo "🔍 INSTALLED TOOLS VERIFICATION"
+echo "=================================================="
 
-echo "AWS CLI version:"
-aws --version
+# Function to print tool version with consistent formatting
+print_version() {
+  local tool=$1
+  local version_cmd=$2
+  
+  echo "📦 $tool version:"
+  echo "-------------------"
+  eval $version_cmd
+  echo ""
+}
 
-echo "Ansible version:"
-ansible --version
+# AWS CLI
+print_version "AWS CLI" "aws --version"
 
-echo "Terraform version:"
-terraform --version
+# Terraform and related tools
+print_version "Terraform" "terraform --version"
+print_version "tenv" "tenv --version"
 
-echo "Docker version:"
-docker --version
+# Container tools
+print_version "Docker" "docker --version"
+print_version "Docker Compose" "docker compose version"
 
-echo "kubectl version:"
-kubectl version --client
+# Kubernetes tools
+print_version "kubectl" "kubectl version --client"
+print_version "minikube" "minikube version"
 
-echo "minikube version:"
-minikube version
+# Configuration management
+print_version "Ansible" "ansible --version"
+print_version "Ansible Lint" "ansible-lint --version"
 
-echo "Post-creation setup completed successfully!"
+# Python and Python tools
+print_version "Python" "python3 --version"
+print_version "UV" "uv --version"
+
+# Installed Python packages
+echo "📦 Installed Python packages:"
+echo "-------------------"
+uv tool list
+echo ""
+
+# npm
+print_version "npm" "npm --version"
+
+# System tools
+print_version "jq" "jq --version"
+print_version "curl" "curl --version | head -n 1"
+
+echo "=================================================="
+echo "✅ Post-creation setup completed successfully!"
+echo "=================================================="
 
 # Apply changes to the current session by sourcing .bashrc
 # This makes newly configured tools available immediately without restarting the shell
