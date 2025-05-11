@@ -110,7 +110,9 @@
         // Python type checking configuration
         "python.analysis.typeCheckingMode": "strict", // Enforces strict type checking for better code quality
         // Privacy settings
-        "redhat.telemetry.enabled": false // Disables telemetry data collection for privacy
+        "redhat.telemetry.enabled": false, // Disables telemetry data collection for privacy
+        // Prettier code formatting configuration
+        "prettier.enable": true // Enables Prettier code formatting
       }
     }
   },
