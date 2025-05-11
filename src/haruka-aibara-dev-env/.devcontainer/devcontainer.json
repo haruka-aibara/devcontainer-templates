@@ -41,6 +41,8 @@
         "yzhang.markdown-all-in-one", // Enhanced Markdown editing capabilities
         "shd101wyy.markdown-preview-enhanced", // Advanced Markdown preview with extra features
         "bierner.markdown-mermaid", // Adds Mermaid diagram support to Markdown files
+        // Code formatting
+        "esbenp.prettier-vscode", // Prettier code formatter for consistent code style
         // Python development ecosystem - comprehensive set of tools for quality code
         "njpwerner.autodocstring", // Generates Python docstrings automatically
         "ms-python.mypy-type-checker", // Static type checking for Python
