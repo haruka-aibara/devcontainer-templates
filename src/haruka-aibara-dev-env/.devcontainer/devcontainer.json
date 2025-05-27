@@ -114,7 +114,18 @@
         // Privacy settings
         "redhat.telemetry.enabled": false, // Disables telemetry data collection for privacy
         // Prettier code formatting configuration
-        "prettier.enable": true // Enables Prettier code formatting
+        "prettier.enable": true, // Enables Prettier code formatting
+        "[yaml]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode" // Uses Prettier for YAML formatting
+        },
+        "[javascript]": {
+          "editor.defaultFormatter": "vscode.typescript-language-features" // Uses TypeScript features for JavaScript
+        },
+        "[markdown]": {
+          "editor.defaultFormatter": "darkriszty.markdown-table-prettify" // Uses markdown-table-prettify for Markdown
+        },
+        "markdown.marp.pptx.editable": "on", // Enables editing Marp PPTX files
+        "markdown.marp.exportType": "pptx" // Sets default Marp export type to PPTX
       }
     }
   },
