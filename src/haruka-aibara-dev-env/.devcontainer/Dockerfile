@@ -119,7 +119,7 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 ENV PATH=/home/vscode/.local/bin:$PATH
 
 # Disable gcloud logging to avoid read-only file system warnings
-ENV CLOUDSDK_CORE_DISABLE_LOGGING=1
+ENV CLOUDSDK_CORE_DISABLE_FILE_LOGGING=1
 
 # Adding metadata for better container documentation and transparency
 # Includes description, licensing, and source repository information
