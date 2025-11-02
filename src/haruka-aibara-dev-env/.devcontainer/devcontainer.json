@@ -15,6 +15,9 @@
     // Mount AWS credentials from host to container to enable AWS CLI and SDK functionality
     // Read-only access prevents accidental modification of credentials from within the container
     "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,readonly",
+    // Mount Google Cloud credentials from host to container to enable gcloud CLI functionality
+    // Read-only access prevents accidental modification of credentials from within the container
+    "source=${localEnv:HOME}/.config/gcloud,target=/home/vscode/.config/gcloud,type=bind,readonly",
     // Mount Git configuration to maintain consistent commit identity across environments
     // Read-only to ensure container operations cannot modify your global Git settings
     "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,readonly"

@@ -121,8 +121,9 @@ print_version() {
   echo ""
 }
 
-# AWS CLI
+# Cloud CLIs
 print_version "AWS CLI" "aws --version"
+print_version "Google Cloud SDK" "gcloud --version"
 
 # Terraform and related tools
 print_version "Terraform" "terraform --version"

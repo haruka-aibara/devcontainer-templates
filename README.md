@@ -9,6 +9,7 @@ A comprehensive DevContainer template for cloud infrastructure development, prov
 - **Infrastructure as Code**
   - Terraform (managed by tenv for version control)
   - AWS CLI v2
+  - Google Cloud SDK (gcloud CLI)
   - Ansible & Ansible Lint
 
 - **Container & Orchestration**
@@ -39,7 +40,7 @@ A comprehensive DevContainer template for cloud infrastructure development, prov
 
 - Optimized extensions for:
   - Infrastructure as Code (Terraform, Ansible)
-  - Cloud Development (AWS)
+  - Cloud Development (AWS, Google Cloud)
   - Python Development
   - Docker Management
   - Documentation (Markdown with Mermaid diagrams)
@@ -52,7 +53,7 @@ A comprehensive DevContainer template for cloud infrastructure development, prov
 - Visual Studio Code
 - [VS Code Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 - WSL2 with Ubuntu installed
-- Properly configured `.aws` and `.gitconfig` directories in your WSL2 Ubuntu home directory
+- Properly configured `.aws`, `.config/gcloud`, and `.gitconfig` directories in your WSL2 Ubuntu home directory
 
 ### WSL2 Setup Prerequisites
 
@@ -64,12 +65,17 @@ Before using this DevContainer template, ensure:
    ~/.aws/credentials
    ~/.aws/config
    ```
-3. Your Git configuration is set up in your WSL2 Ubuntu home directory:
+3. Your Google Cloud credentials are set up in your WSL2 Ubuntu home directory (optional):
+   ```
+   ~/.config/gcloud/
+   ```
+   Run `gcloud auth login` on your host to configure credentials.
+4. Your Git configuration is set up in your WSL2 Ubuntu home directory:
    ```
    ~/.gitconfig
    ```
 
-These files will be mounted into the container (read-only) to enable authentication with AWS services and maintain consistent Git commit identity.
+These files will be mounted into the container (read-only) to enable authentication with cloud services and maintain consistent Git commit identity.
 
 ## 🔧 Usage
 
@@ -111,8 +117,9 @@ print_version() {
   echo ""
 }
 
-# AWS CLI
+# Cloud CLIs
 print_version "AWS CLI" "aws --version"
+print_version "Google Cloud SDK" "gcloud --version"
 
 # Terraform and related tools
 print_version "Terraform" "terraform --version"
@@ -148,12 +155,19 @@ print_version "jq" "jq --version"
 print_version "curl" "curl --version | head -n 1"
 ```
 
-### AWS Credentials
+### Cloud Credentials
 
-AWS credentials from your host machine are automatically mounted (read-only) into the container. Verify with:
+Cloud credentials from your host machine are automatically mounted (read-only) into the container.
 
+**AWS Credentials**: Verify with:
 ```bash
 aws sts get-caller-identity
+```
+
+**Google Cloud Credentials**: Verify with:
+```bash
+gcloud config list
+gcloud auth list
 ```
 
 ## 🛠 Customization
