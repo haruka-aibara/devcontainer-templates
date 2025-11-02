@@ -1,6 +1,6 @@
 {
     "id": "haruka-aibara-dev-env",
-    "version": "0.4.7",
+    "version": "0.4.8",
     "name": "Haruka Aibara Development Environment",
     "description": "A comprehensive development environment for AWS, Google Cloud, Terraform, Ansible, Docker, and Python projects",
     "platforms": [

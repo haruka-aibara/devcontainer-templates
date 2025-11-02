@@ -85,7 +85,9 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 
 # Setting up a non-root user environment with appropriate permissions
 # Creating log directory with restricted permissions for security
+# Also creating gcloud config directory to avoid read-only file system warnings
 RUN mkdir -p /home/vscode/logs \
+    && mkdir -p /home/vscode/.config/gcloud/logs \
     && chown -R vscode:vscode /home/vscode \
     && chmod -R 750 /home/vscode
 
