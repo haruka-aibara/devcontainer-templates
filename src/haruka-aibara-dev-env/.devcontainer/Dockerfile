@@ -85,9 +85,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 
 # Setting up a non-root user environment with appropriate permissions
 # Creating log directory with restricted permissions for security
-# Also creating gcloud config directory to avoid read-only file system warnings
 RUN mkdir -p /home/vscode/logs \
-    && mkdir -p /home/vscode/.config/gcloud/logs \
     && chown -R vscode:vscode /home/vscode \
     && chmod -R 750 /home/vscode
 
@@ -119,6 +117,9 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Adding the user's local bin directory to PATH for installed tools
 ENV PATH=/home/vscode/.local/bin:$PATH
+
+# Disable gcloud logging to avoid read-only file system warnings
+ENV CLOUDSDK_CORE_DISABLE_LOGGING=1
 
 # Adding metadata for better container documentation and transparency
 # Includes description, licensing, and source repository information
