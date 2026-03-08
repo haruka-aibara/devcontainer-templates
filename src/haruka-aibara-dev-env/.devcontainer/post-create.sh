@@ -48,13 +48,16 @@ uv tool install pytest        # Feature-rich testing framework for Python
 # =============================================================================
 
 echo "Step 4: Configuring Terraform environment..."
-# Install the latest stable version of Terraform
+# Install and activate the latest stable version of Terraform
 tenv tf install latest-stable
+tenv tf use latest-stable
 
-# Add tenv to PATH for the current session and future sessions
-export PATH=$(tenv update-path):$PATH
+# Add the terraform binary directory directly to PATH
+# tenv stores the binary at ~/.tenv/Terraform/<version>/terraform
+TF_VERSION=$(cat ~/.tenv/Terraform/version)
+export PATH="${HOME}/.tenv/Terraform/${TF_VERSION}:${PATH}"
 echo '# tenv - Terraform version management' >> ~/.bashrc
-echo 'export PATH=$(tenv update-path):$PATH' >> ~/.bashrc
+echo 'export PATH="${HOME}/.tenv/Terraform/$(cat ${HOME}/.tenv/Terraform/version):${PATH}"' >> ~/.bashrc
 
 # =============================================================================
 # Markdown Enhancement for Documentation
