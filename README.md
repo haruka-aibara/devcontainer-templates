@@ -23,7 +23,6 @@ A comprehensive DevContainer template for cloud infrastructure development, prov
   - Static type checking (pyre-check)
   - Testing framework (pytest)
   - npm
-  - Claude Code CLI
 
 - **Utilities**
   - jq, curl, wget, htop, tree

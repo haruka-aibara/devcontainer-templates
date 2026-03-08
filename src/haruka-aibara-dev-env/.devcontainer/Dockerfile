@@ -78,8 +78,6 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     # Creating symbolic links for AWS CLI to ensure it's in the system PATH
     && ln -s /usr/local/aws-cli/v2/current/bin/aws /usr/local/bin/aws \
     && ln -s /usr/local/aws-cli/v2/current/bin/aws_completer /usr/local/bin/aws_completer \
-    # Installing Claude Code CLI via official native installer
-    && curl -fsSL https://claude.ai/install.sh | bash \
     # Cleaning up to minimize image size
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
