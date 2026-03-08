@@ -51,8 +51,8 @@ echo "Step 4: Configuring Terraform environment..."
 # Install the latest stable version of Terraform
 tenv tf install latest-stable
 
-# Add tenv to PATH by updating .bashrc
-# This ensures the Terraform executable is available in all terminal sessions
+# Add tenv to PATH for the current session and future sessions
+export PATH=$(tenv update-path):$PATH
 echo '# tenv - Terraform version management' >> ~/.bashrc
 echo 'export PATH=$(tenv update-path):$PATH' >> ~/.bashrc
 
