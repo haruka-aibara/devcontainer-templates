@@ -54,6 +54,18 @@ src/haruka-aibara-dev-env/
 - publish されるバージョンは CI が bump した後の番号（手元のファイルの番号ではない）
 - CI の bump コミット後に `git pull` すれば手元も揃う
 
+## push 手順
+
+CI が自動 bump コミットを push するため、ローカルが遅れていることが多い。
+**必ず pull してから push すること。**
+
+```bash
+git stash          # 未ステージ変更があれば
+git pull --rebase origin main
+git stash pop      # stash した場合
+git push origin main
+```
+
 ## バージョン管理の方針
 
 - Dockerfile 内のツールはほぼ全て "latest" を動的取得（固定バージョンなし）
