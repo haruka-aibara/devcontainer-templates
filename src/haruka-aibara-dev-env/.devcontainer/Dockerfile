@@ -105,6 +105,11 @@ WORKDIR /home/vscode
 # Using the official installation script from astral.sh
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
+# Installing Claude Code CLI using the official native installer
+# Native installer is recommended over npm (npm install is deprecated)
+# Installs to ~/.local/bin/claude which is already in PATH
+RUN curl -fsSL https://claude.ai/install.sh | bash
+
 # Adding the user's local bin directory to PATH for installed tools
 ENV PATH=/home/vscode/.local/bin:$PATH
 
