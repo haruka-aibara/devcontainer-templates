@@ -34,8 +34,7 @@
         // Infrastructure as Code (IaC) support
         "hashicorp.terraform", // Provides syntax highlighting, validation, and IntelliSense for Terraform
         // Docker development tools for container management and debugging
-        "docker.docker", // Core Docker extension for container management
-        "ms-azuretools.vscode-docker", // Enhanced Docker UI and commands integration
+        "docker.docker", // Docker extension for container management
         // Configuration management support
         "redhat.ansible", // Ansible playbook editing, linting and syntax highlighting
         // Cloud provider toolkit

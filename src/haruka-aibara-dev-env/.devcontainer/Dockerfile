@@ -47,7 +47,6 @@ COPY --from=builder /usr/local/aws-cli /usr/local/aws-cli
 COPY --from=builder /usr/local/bin/minikube /usr/local/bin/minikube
 COPY --from=builder /usr/local/bin/kubectl /usr/local/bin/kubectl
 COPY --from=builder /usr/bin/tenv /usr/bin/tenv
-COPY --from=builder /usr/bin/terraform /usr/bin/terraform
 
 # Installing minimal set of essential system tools for development
 # Grouped in a single RUN command to reduce image layers
@@ -69,8 +68,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
         libreoffice-impress \
         fonts-noto-cjk \
     # Adding Google Chrome repository and installing Chrome
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google-chrome.list \
+    && curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google-chrome.list \
     # Adding Google Cloud SDK repository for gcloud CLI installation
     && echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
     && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg \
@@ -79,6 +78,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     # Creating symbolic links for AWS CLI to ensure it's in the system PATH
     && ln -s /usr/local/aws-cli/v2/current/bin/aws /usr/local/bin/aws \
     && ln -s /usr/local/aws-cli/v2/current/bin/aws_completer /usr/local/bin/aws_completer \
+    # Installing Claude Code CLI via official native installer
+    && curl -fsSL https://claude.ai/install.sh | bash \
     # Cleaning up to minimize image size
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
@@ -89,20 +90,11 @@ RUN mkdir -p /home/vscode/logs \
     && chown -R vscode:vscode /home/vscode \
     && chmod -R 750 /home/vscode
 
-# Enhancing container security through Docker runtime options
-# Dropping capabilities and preventing privilege escalation
-ENV DOCKER_OPTIONS="--security-opt=no-new-privileges --cap-drop=ALL --security-opt=seccomp=unconfined"
-
 # Creating application log directory with proper permissions
 # Ensuring logs are writable by the application user but protected from others
 RUN mkdir -p /var/log/app \
     && chown vscode:vscode /var/log/app \
     && chmod 750 /var/log/app
-
-# Adding container health check to monitor application status
-# Will perform a check every 30 seconds with appropriate timeout settings
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:3000/ || exit 1
 
 # Switching to non-root user for better security
 # Running as root in containers is a security risk

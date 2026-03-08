@@ -23,7 +23,6 @@ echo "Running post-create setup..."
 
 echo "Step 1: Installing Python code quality tools..."
 # Code style and linting tools to enforce consistent code quality
-uv tool install pycodestyle   # Simple style checker against PEP 8
 uv tool install flake8        # Wrapper combining pycodestyle, pyflakes and complexity analysis
 uv tool install pylint        # Comprehensive static code analyzer with detailed reports
 
@@ -117,7 +116,7 @@ print_version() {
   
   echo "📦 $tool version:"
   echo "-------------------"
-  eval $version_cmd
+  bash -c "$version_cmd"
   echo ""
 }
 
@@ -162,6 +161,3 @@ echo "=================================================="
 echo "✅ Post-creation setup completed successfully!"
 echo "=================================================="
 
-# Apply changes to the current session by sourcing .bashrc
-# This makes newly configured tools available immediately without restarting the shell
-source ~/.bashrc
