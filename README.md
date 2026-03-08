@@ -19,10 +19,11 @@ A comprehensive DevContainer template for cloud infrastructure development, prov
 
 - **Development Tools**
   - Python with uv (modern package manager)
-  - Code quality tools (pylint, flake8, pycodestyle)
+  - Code quality tools (pylint, flake8)
   - Static type checking (pyre-check)
   - Testing framework (pytest)
   - npm
+  - Claude Code CLI
 
 - **Utilities**
   - jq, curl, wget, htop, tree
@@ -33,8 +34,6 @@ A comprehensive DevContainer template for cloud infrastructure development, prov
 - Non-root user setup (runs as `vscode`)
 - Read-only credential mounting
 - Restricted container permissions
-- Secure Docker runtime options
-- Container health checks
 
 ### 🧰 VS Code Integration
 
@@ -99,61 +98,7 @@ This DevContainer template is published and ready to use directly through VS Cod
 
 Once your container is running, you'll have access to all the pre-configured tools:
 
-After the container is running, all pre-configured tools are immediately available in the integrated terminal:
-
-```bash
-echo "=================================================="
-echo "🔍 INSTALLED TOOLS VERIFICATION"
-echo "=================================================="
-
-# Function to print tool version with consistent formatting
-print_version() {
-  local tool=$1
-  local version_cmd=$2
-  
-  echo "📦 $tool version:"
-  echo "-------------------"
-  eval $version_cmd
-  echo ""
-}
-
-# Cloud CLIs
-print_version "AWS CLI" "aws --version"
-print_version "Google Cloud SDK" "gcloud --version"
-
-# Terraform and related tools
-print_version "Terraform" "terraform --version"
-print_version "tenv" "tenv --version"
-
-# Container tools
-print_version "Docker" "docker --version"
-print_version "Docker Compose" "docker compose version"
-
-# Kubernetes tools
-print_version "kubectl" "kubectl version --client"
-print_version "minikube" "minikube version"
-
-# Configuration management
-print_version "Ansible" "ansible --version"
-print_version "Ansible Lint" "ansible-lint --version"
-
-# Python and Python tools
-print_version "Python" "python3 --version"
-print_version "UV" "uv --version"
-
-# Installed Python packages
-echo "📦 Installed Python packages:"
-echo "-------------------"
-uv tool list
-echo ""
-
-# npm
-print_version "npm" "npm --version"
-
-# System tools
-print_version "jq" "jq --version"
-print_version "curl" "curl --version | head -n 1"
-```
+After the container is running, all pre-configured tools are immediately available in the integrated terminal. Tool versions are automatically verified during container creation.
 
 ### Cloud Credentials
 
