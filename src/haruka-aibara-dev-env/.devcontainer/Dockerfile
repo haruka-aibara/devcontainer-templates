@@ -120,4 +120,4 @@ ENV PATH=/home/vscode/.local/bin:$PATH
 # Includes description, licensing, and source repository information
 LABEL org.opencontainers.image.description="Secure development environment for AWS, Terraform, and Python projects"
 LABEL org.opencontainers.image.licenses="MIT"
-LABEL org.opencontainers.image.source="https://github.com/haruka-aibara/my-devcontainer-template"
+LABEL org.opencontainers.image.source="https://github.com/haruka-aibara/devcontainer-templates"

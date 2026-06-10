@@ -73,7 +73,7 @@ Before using this DevContainer template, ensure:
    ~/.gitconfig
    ```
 
-These files will be mounted into the container (read-only) to enable authentication with cloud services and maintain consistent Git commit identity.
+These files will be mounted into the container to enable authentication with cloud services and maintain consistent Git commit identity. The `.aws` and `.gitconfig` mounts are read-only; the `gcloud` directory is mounted writable so the CLI can refresh access tokens.
 
 ## 🔧 Usage
 
@@ -101,7 +101,7 @@ After the container is running, all pre-configured tools are immediately availab
 
 ### Cloud Credentials
 
-Cloud credentials from your host machine are automatically mounted (read-only) into the container.
+Cloud credentials from your host machine are automatically mounted into the container (AWS read-only, gcloud writable for token refresh).
 
 **AWS Credentials**: Verify with:
 ```bash
