@@ -12,7 +12,6 @@ src/haruka-aibara-dev-env/
     devcontainer.json                 # VS Code拡張・設定・features定義
     post-create.sh                    # コンテナ作成後セットアップ
 
-.devcontainer/                        # このリポジトリ自体の開発環境（src配下と同内容）
 .github/workflows/release.yaml        # mainへのpushで自動リリース
 ```
 
