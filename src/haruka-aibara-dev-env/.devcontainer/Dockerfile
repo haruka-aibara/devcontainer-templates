@@ -1,5 +1,7 @@
-# Renovate がこの digest を追跡・更新する
-ARG BASE_IMAGE=mcr.microsoft.com/devcontainers/base:ubuntu@sha256:bb779775cfc7d2e65f9b0f80f17770878f5a50c00d15cc873b627c5c214ce37e
+# Base image: mcr.microsoft.com/devcontainers/base:ubuntu, pinned by digest for reproducibility.
+# Digest-only (no tag) form is required: the devcontainer CLI cannot parse a combined name:tag@sha256 reference.
+# Renovate がこの digest を追跡・更新する。
+ARG BASE_IMAGE=mcr.microsoft.com/devcontainers/base@sha256:bb779775cfc7d2e65f9b0f80f17770878f5a50c00d15cc873b627c5c214ce37e
 
 # Multi-stage build using Ubuntu base image to optimize final image size
 FROM ${BASE_IMAGE} AS builder
