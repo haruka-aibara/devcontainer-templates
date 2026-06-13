@@ -1,5 +1,8 @@
 # Multi-stage build using Ubuntu base image to optimize final image size
-FROM mcr.microsoft.com/devcontainers/base:ubuntu AS builder
+# Pinned to the 24.04 (noble) LTS tag: the floating ":ubuntu" tag now resolves to
+# Ubuntu "resolute" (25.10, non-LTS), where the docker-in-docker feature's "moby"
+# packages (moby-cli etc.) are not yet available and the feature install fails.
+FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04 AS builder
 
 # System updates and tool installation - combined in a single layer to minimize image size
 # Using --no-install-recommends flag to avoid installing unnecessary packages
@@ -39,7 +42,8 @@ RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/s
     && rm kubectl
 
 # Creating the final optimized image with just the necessary tools
-FROM mcr.microsoft.com/devcontainers/base:ubuntu
+# Pinned to the same 24.04 (noble) LTS tag as the builder stage (see note above).
+FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 
 # Copying installed tools from the builder stage to reduce final image size
 # This multi-stage approach prevents build artifacts from bloating the final image
