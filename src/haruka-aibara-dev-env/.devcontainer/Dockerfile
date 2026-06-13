@@ -54,16 +54,11 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
         tree \
         jq \
         ca-certificates \
-        libreoffice-impress \
-        fonts-noto-cjk \
-    # Adding Google Chrome repository and installing Chrome
-    && curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
-    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google-chrome.list \
-    # Adding Google Cloud SDK repository for gcloud CLI installation
-    && echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
+    # Adding Google Cloud SDK repository for gcloud CLI installation (official apt repo, keyring-verified)
+    && echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee /etc/apt/sources.list.d/google-cloud-sdk.list \
     && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg \
     && apt-get update \
-    && apt-get install -y google-chrome-stable google-cloud-cli \
+    && apt-get install -y google-cloud-cli \
     # Cleaning up to minimize image size
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*

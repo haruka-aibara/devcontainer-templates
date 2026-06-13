@@ -44,7 +44,6 @@
         "shd101wyy.markdown-preview-enhanced", // Advanced Markdown preview with extra features
         "bierner.markdown-mermaid", // Adds Mermaid diagram support to Markdown files
         "darkriszty.markdown-table-prettify", // Transforms markdown tables to be more readable.
-        "marp-team.marp-vscode", // Marp for creating presentations with Markdown
         // Code formatting
         "esbenp.prettier-vscode", // Prettier code formatter for consistent code style
         // Python development ecosystem - comprehensive set of tools for quality code
@@ -125,9 +124,7 @@
         },
         "[markdown]": {
           "editor.defaultFormatter": "darkriszty.markdown-table-prettify" // Uses markdown-table-prettify for Markdown
-        },
-        "markdown.marp.pptx.editable": "on", // Enables editing Marp PPTX files
-        "markdown.marp.exportType": "pptx" // Sets default Marp export type to PPTX
+        }
       }
     }
   },
