@@ -40,6 +40,10 @@ echo "Step 3: Installing testing tools..."
 # uvx pytest test_xxx.py -v
 uv tool install pytest        # Feature-rich testing framework for Python
 
+# Ansible (managed via uv instead of apt)
+uv tool install ansible-core  # Core Ansible automation engine
+uv tool install ansible-lint  # Best practice linter for Ansible playbooks
+
 # =============================================================================
 # Terraform Environment Configuration
 # =============================================================================

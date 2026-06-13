@@ -44,8 +44,6 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
         tree \
         jq \
         ca-certificates \
-        ansible \
-        ansible-lint \
         libreoffice-impress \
         fonts-noto-cjk \
     # Adding Google Chrome repository and installing Chrome
