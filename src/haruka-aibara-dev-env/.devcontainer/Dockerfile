@@ -1,5 +1,8 @@
+# Renovate がこの digest を追跡・更新する
+ARG BASE_IMAGE=mcr.microsoft.com/devcontainers/base:ubuntu@sha256:bb779775cfc7d2e65f9b0f80f17770878f5a50c00d15cc873b627c5c214ce37e
+
 # Multi-stage build using Ubuntu base image to optimize final image size
-FROM mcr.microsoft.com/devcontainers/base:ubuntu AS builder
+FROM ${BASE_IMAGE} AS builder
 
 # System updates and tool installation - combined in a single layer to minimize image size
 # Using --no-install-recommends flag to avoid installing unnecessary packages
@@ -39,7 +42,8 @@ RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/s
     && rm kubectl
 
 # Creating the final optimized image with just the necessary tools
-FROM mcr.microsoft.com/devcontainers/base:ubuntu
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
 # Copying installed tools from the builder stage to reduce final image size
 # This multi-stage approach prevents build artifacts from bloating the final image
