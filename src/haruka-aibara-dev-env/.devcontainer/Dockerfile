@@ -15,12 +15,22 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-# Installing tenv (Terraform version manager) from the latest GitHub release
-# Using GitHub API to dynamically determine the latest version
-RUN LATEST_VERSION=$(curl --silent https://api.github.com/repos/tofuutils/tenv/releases/latest | jq -r .tag_name) \
-    && curl -O -L "https://github.com/tofuutils/tenv/releases/latest/download/tenv_${LATEST_VERSION}_amd64.deb" \
-    && dpkg -i "tenv_${LATEST_VERSION}_amd64.deb" \
-    && rm "tenv_${LATEST_VERSION}_amd64.deb"
+# Installing tenv (Terraform/OpenTofu version manager) from a pinned GitHub release.
+# Version + per-arch SHA256 are pinned for reproducibility; Renovate updates them.
+ARG TENV_VERSION=v4.14.8
+ARG TENV_SHA256_AMD64=4d6f019563fdb472bc16a77d0e7f950373a65111c97f298bda78dc5ab84ac00e
+ARG TENV_SHA256_ARM64=6f7db564f4f21cf42595c8104adfcccb90376400582d0f4ce5985af13fa5ce61
+ARG TARGETARCH
+RUN set -eux; \
+    case "${TARGETARCH}" in \
+      amd64) sha="${TENV_SHA256_AMD64}";; \
+      arm64) sha="${TENV_SHA256_ARM64}";; \
+      *) echo "unsupported arch: ${TARGETARCH}"; exit 1;; \
+    esac; \
+    curl -fsSL -o tenv.deb "https://github.com/tofuutils/tenv/releases/download/${TENV_VERSION}/tenv_${TENV_VERSION}_${TARGETARCH}.deb"; \
+    echo "${sha}  tenv.deb" | sha256sum -c -; \
+    dpkg -i tenv.deb; \
+    rm tenv.deb
 
 # Creating the final optimized image with just the necessary tools
 ARG BASE_IMAGE
@@ -77,14 +87,41 @@ USER vscode
 # Setting the working directory for all subsequent operations
 WORKDIR /home/vscode
 
-# Installing uv - Modern Python package installer and environment manager
-# Using the official installation script from astral.sh
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+# Installing uv (Python package/env manager) from a pinned release with checksum verification.
+ARG UV_VERSION=0.11.21
+ARG UV_SHA256_AMD64=8c88519b0ef0af9801fcdee419bbb12116bd9e6b18e162ae093c932d8b264050
+ARG UV_SHA256_ARM64=88e800834007cc5efd4675f166eb2a51e7e3ad19876d85fa8805a6fb5c922397
+ARG TARGETARCH
+RUN set -eux; \
+    case "${TARGETARCH}" in \
+      amd64) triple=x86_64-unknown-linux-gnu; sha="${UV_SHA256_AMD64}";; \
+      arm64) triple=aarch64-unknown-linux-gnu; sha="${UV_SHA256_ARM64}";; \
+      *) echo "unsupported arch: ${TARGETARCH}"; exit 1;; \
+    esac; \
+    mkdir -p "$HOME/.local/bin"; \
+    curl -fsSL -o uv.tar.gz "https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/uv-${triple}.tar.gz"; \
+    echo "${sha}  uv.tar.gz" | sha256sum -c -; \
+    tar -xzf uv.tar.gz; \
+    install "uv-${triple}/uv" "uv-${triple}/uvx" "$HOME/.local/bin/"; \
+    rm -rf uv.tar.gz "uv-${triple}"
 
-# Installing Claude Code CLI using the official native installer
-# Native installer is recommended over npm (npm install is deprecated)
-# Installs to ~/.local/bin/claude which is already in PATH
-RUN curl -fsSL https://claude.ai/install.sh | bash
+# Installing Claude Code CLI from a pinned version with checksum verification.
+# We bypass install.sh (which always pulls latest) to pin the version for reproducibility.
+# Checksums are from the official release manifest.json.
+ARG CLAUDE_VERSION=2.1.177
+ARG CLAUDE_SHA256_AMD64=ff41753634b20c869ef6a32a20863521b33d4186ac0d6a49379ab48a48395ee7
+ARG CLAUDE_SHA256_ARM64=baf3926dc166215772f959e367da9784ff4c75157aaafe4524fdc79ebff984b1
+RUN set -eux; \
+    case "${TARGETARCH}" in \
+      amd64) platform=linux-x64; sha="${CLAUDE_SHA256_AMD64}";; \
+      arm64) platform=linux-arm64; sha="${CLAUDE_SHA256_ARM64}";; \
+      *) echo "unsupported arch: ${TARGETARCH}"; exit 1;; \
+    esac; \
+    mkdir -p "$HOME/.local/bin"; \
+    curl -fsSL -o claude "https://downloads.claude.ai/claude-code-releases/${CLAUDE_VERSION}/${platform}/claude"; \
+    echo "${sha}  claude" | sha256sum -c -; \
+    install claude "$HOME/.local/bin/claude"; \
+    rm claude
 
 # Adding the user's local bin directory to PATH for installed tools
 ENV PATH=/home/vscode/.local/bin:$PATH
