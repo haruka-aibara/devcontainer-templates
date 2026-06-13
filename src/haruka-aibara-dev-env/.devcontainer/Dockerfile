@@ -1,7 +1,9 @@
-# Base image: mcr.microsoft.com/devcontainers/base:ubuntu, pinned by digest for reproducibility.
+# Base image: mcr.microsoft.com/devcontainers/base:ubuntu-24.04 (LTS), pinned by digest for reproducibility.
+# We pin to the 24.04 LTS line rather than the rolling ':ubuntu' tag, which now points to a
+# non-LTS interim release ('resolute') that lacks moby packages and breaks docker-in-docker.
 # Digest-only (no tag) form is required: the devcontainer CLI cannot parse a combined name:tag@sha256 reference.
 # Renovate がこの digest を追跡・更新する。
-ARG BASE_IMAGE=mcr.microsoft.com/devcontainers/base@sha256:bb779775cfc7d2e65f9b0f80f17770878f5a50c00d15cc873b627c5c214ce37e
+ARG BASE_IMAGE=mcr.microsoft.com/devcontainers/base@sha256:d94c97dd9cacf183d0a6fd12a8e87b526e9e928307674ae9c94139139c0c6eae
 
 # Multi-stage build using Ubuntu base image to optimize final image size
 FROM ${BASE_IMAGE} AS builder
