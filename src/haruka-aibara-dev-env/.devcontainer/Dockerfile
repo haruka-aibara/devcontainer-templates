@@ -15,19 +15,6 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-# Installing AWS CLI from official source
-# Downloaded as zip, extracted, installed, then cleaned up to save space
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
-    && unzip awscliv2.zip \
-    && ./aws/install \
-    && rm -rf aws awscliv2.zip
-
-# Installing minikube for local Kubernetes development
-# Direct download of the latest stable release from GitHub
-RUN curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64 \
-    && install minikube-linux-amd64 /usr/local/bin/minikube \
-    && rm minikube-linux-amd64
-
 # Installing tenv (Terraform version manager) from the latest GitHub release
 # Using GitHub API to dynamically determine the latest version
 RUN LATEST_VERSION=$(curl --silent https://api.github.com/repos/tofuutils/tenv/releases/latest | jq -r .tag_name) \
@@ -35,28 +22,18 @@ RUN LATEST_VERSION=$(curl --silent https://api.github.com/repos/tofuutils/tenv/r
     && dpkg -i "tenv_${LATEST_VERSION}_amd64.deb" \
     && rm "tenv_${LATEST_VERSION}_amd64.deb"
 
-# Installing kubectl for managing Kubernetes clusters
-# Using curl to get the latest stable version dynamically
-RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
-    && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl \
-    && rm kubectl
-
 # Creating the final optimized image with just the necessary tools
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
 # Copying installed tools from the builder stage to reduce final image size
 # This multi-stage approach prevents build artifacts from bloating the final image
-COPY --from=builder /usr/local/aws-cli /usr/local/aws-cli
-COPY --from=builder /usr/local/bin/minikube /usr/local/bin/minikube
-COPY --from=builder /usr/local/bin/kubectl /usr/local/bin/kubectl
 COPY --from=builder /usr/bin/tenv /usr/bin/tenv
 
 # Installing minimal set of essential system tools for development
 # Grouped in a single RUN command to reduce image layers
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y --no-install-recommends \
-        npm \
         unzip \
         zip \
         gzip \
@@ -79,9 +56,6 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg \
     && apt-get update \
     && apt-get install -y google-chrome-stable google-cloud-cli \
-    # Creating symbolic links for AWS CLI to ensure it's in the system PATH
-    && ln -s /usr/local/aws-cli/v2/current/bin/aws /usr/local/bin/aws \
-    && ln -s /usr/local/aws-cli/v2/current/bin/aws_completer /usr/local/bin/aws_completer \
     # Cleaning up to minimize image size
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*

@@ -136,9 +136,12 @@
     // Docker-in-Docker capability to run Docker commands inside the container
     // Essential for CI/CD workflows and container-based development
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
-      "version": "latest", // Uses the latest Docker version available
       "moby": true, // Uses the open-source Moby engine instead of Docker CE
       "dockerDashComposeVersion": "v2" // Specifies Docker Compose v2 for modern container orchestration
-    }
+    },
+    "ghcr.io/devcontainers/features/aws-cli:1": {},
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/python:1": {}
   }
 }
