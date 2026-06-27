@@ -7,9 +7,11 @@ ARG BASE_IMAGE=mcr.microsoft.com/devcontainers/base@sha256:d94c97dd9cacf183d0a6f
 
 # Multi-stage build using Ubuntu base image to optimize final image size
 FROM ${BASE_IMAGE} AS builder
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # System updates and tool installation - combined in a single layer to minimize image size
 # Using --no-install-recommends flag to avoid installing unnecessary packages
+# hadolint ignore=DL3008
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y --no-install-recommends \
         unzip \
@@ -39,6 +41,7 @@ RUN set -eux; \
 # Creating the final optimized image with just the necessary tools
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Copying installed tools from the builder stage to reduce final image size
 # This multi-stage approach prevents build artifacts from bloating the final image
@@ -46,6 +49,7 @@ COPY --from=builder /usr/bin/tenv /usr/bin/tenv
 
 # Installing minimal set of essential system tools for development
 # Grouped in a single RUN command to reduce image layers
+# hadolint ignore=DL3008
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y --no-install-recommends \
         unzip \
@@ -62,7 +66,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee /etc/apt/sources.list.d/google-cloud-sdk.list \
     && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg \
     && apt-get update \
-    && apt-get install -y google-cloud-cli \
+    && apt-get install -y --no-install-recommends google-cloud-cli \
     # Cleaning up to minimize image size
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
