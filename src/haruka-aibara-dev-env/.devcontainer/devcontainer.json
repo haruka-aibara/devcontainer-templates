@@ -124,6 +124,7 @@
       "dockerDashComposeVersion": "v2" // Specifies Docker Compose v2 for modern container orchestration
     },
     "ghcr.io/devcontainers/features/aws-cli:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
     "ghcr.io/devcontainers/features/node:1": {},
     "ghcr.io/devcontainers/features/python:1": {}
