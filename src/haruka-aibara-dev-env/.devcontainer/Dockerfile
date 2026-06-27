@@ -1,11 +1,17 @@
+# Base image: mcr.microsoft.com/devcontainers/base:ubuntu-24.04 (LTS), pinned by digest for reproducibility.
+# We pin to the 24.04 LTS line rather than the rolling ':ubuntu' tag, which now points to a
+# non-LTS interim release ('resolute') that lacks moby packages and breaks docker-in-docker.
+# Digest-only (no tag) form is required: the devcontainer CLI cannot parse a combined name:tag@sha256 reference.
+# Renovate がこの digest を追跡・更新する。
+ARG BASE_IMAGE=mcr.microsoft.com/devcontainers/base@sha256:d94c97dd9cacf183d0a6fd12a8e87b526e9e928307674ae9c94139139c0c6eae
+
 # Multi-stage build using Ubuntu base image to optimize final image size
-# Pinned to the 24.04 (noble) LTS tag: the floating ":ubuntu" tag now resolves to
-# Ubuntu "resolute" (25.10, non-LTS), where the docker-in-docker feature's "moby"
-# packages (moby-cli etc.) are not yet available and the feature install fails.
-FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04 AS builder
+FROM ${BASE_IMAGE} AS builder
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # System updates and tool installation - combined in a single layer to minimize image size
 # Using --no-install-recommends flag to avoid installing unnecessary packages
+# hadolint ignore=DL3008
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y --no-install-recommends \
         unzip \
@@ -15,48 +21,37 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-# Installing AWS CLI from official source
-# Downloaded as zip, extracted, installed, then cleaned up to save space
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
-    && unzip awscliv2.zip \
-    && ./aws/install \
-    && rm -rf aws awscliv2.zip
-
-# Installing minikube for local Kubernetes development
-# Direct download of the latest stable release from GitHub
-RUN curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64 \
-    && install minikube-linux-amd64 /usr/local/bin/minikube \
-    && rm minikube-linux-amd64
-
-# Installing tenv (Terraform version manager) from the latest GitHub release
-# Using GitHub API to dynamically determine the latest version
-RUN LATEST_VERSION=$(curl --silent https://api.github.com/repos/tofuutils/tenv/releases/latest | jq -r .tag_name) \
-    && curl -O -L "https://github.com/tofuutils/tenv/releases/latest/download/tenv_${LATEST_VERSION}_amd64.deb" \
-    && dpkg -i "tenv_${LATEST_VERSION}_amd64.deb" \
-    && rm "tenv_${LATEST_VERSION}_amd64.deb"
-
-# Installing kubectl for managing Kubernetes clusters
-# Using curl to get the latest stable version dynamically
-RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
-    && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl \
-    && rm kubectl
+# Installing tenv (Terraform/OpenTofu version manager) from a pinned GitHub release.
+# Version + per-arch SHA256 are pinned for reproducibility; Renovate updates them.
+ARG TENV_VERSION=v4.14.8
+ARG TENV_SHA256_AMD64=4d6f019563fdb472bc16a77d0e7f950373a65111c97f298bda78dc5ab84ac00e
+ARG TENV_SHA256_ARM64=6f7db564f4f21cf42595c8104adfcccb90376400582d0f4ce5985af13fa5ce61
+ARG TARGETARCH
+RUN set -eux; \
+    case "${TARGETARCH}" in \
+      amd64) sha="${TENV_SHA256_AMD64}";; \
+      arm64) sha="${TENV_SHA256_ARM64}";; \
+      *) echo "unsupported arch: ${TARGETARCH}"; exit 1;; \
+    esac; \
+    curl -fsSL -o tenv.deb "https://github.com/tofuutils/tenv/releases/download/${TENV_VERSION}/tenv_${TENV_VERSION}_${TARGETARCH}.deb"; \
+    echo "${sha}  tenv.deb" | sha256sum -c -; \
+    dpkg -i tenv.deb; \
+    rm tenv.deb
 
 # Creating the final optimized image with just the necessary tools
-# Pinned to the same 24.04 (noble) LTS tag as the builder stage (see note above).
-FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Copying installed tools from the builder stage to reduce final image size
 # This multi-stage approach prevents build artifacts from bloating the final image
-COPY --from=builder /usr/local/aws-cli /usr/local/aws-cli
-COPY --from=builder /usr/local/bin/minikube /usr/local/bin/minikube
-COPY --from=builder /usr/local/bin/kubectl /usr/local/bin/kubectl
 COPY --from=builder /usr/bin/tenv /usr/bin/tenv
 
 # Installing minimal set of essential system tools for development
 # Grouped in a single RUN command to reduce image layers
+# hadolint ignore=DL3008
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y --no-install-recommends \
-        npm \
         unzip \
         zip \
         gzip \
@@ -67,21 +62,11 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
         tree \
         jq \
         ca-certificates \
-        ansible \
-        ansible-lint \
-        libreoffice-impress \
-        fonts-noto-cjk \
-    # Adding Google Chrome repository and installing Chrome
-    && curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
-    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google-chrome.list \
-    # Adding Google Cloud SDK repository for gcloud CLI installation
-    && echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
+    # Adding Google Cloud SDK repository for gcloud CLI installation (official apt repo, keyring-verified)
+    && echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee /etc/apt/sources.list.d/google-cloud-sdk.list \
     && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg \
     && apt-get update \
-    && apt-get install -y google-chrome-stable google-cloud-cli \
-    # Creating symbolic links for AWS CLI to ensure it's in the system PATH
-    && ln -s /usr/local/aws-cli/v2/current/bin/aws /usr/local/bin/aws \
-    && ln -s /usr/local/aws-cli/v2/current/bin/aws_completer /usr/local/bin/aws_completer \
+    && apt-get install -y --no-install-recommends google-cloud-cli \
     # Cleaning up to minimize image size
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
@@ -105,14 +90,41 @@ USER vscode
 # Setting the working directory for all subsequent operations
 WORKDIR /home/vscode
 
-# Installing uv - Modern Python package installer and environment manager
-# Using the official installation script from astral.sh
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+# Installing uv (Python package/env manager) from a pinned release with checksum verification.
+ARG UV_VERSION=0.11.21
+ARG UV_SHA256_AMD64=8c88519b0ef0af9801fcdee419bbb12116bd9e6b18e162ae093c932d8b264050
+ARG UV_SHA256_ARM64=88e800834007cc5efd4675f166eb2a51e7e3ad19876d85fa8805a6fb5c922397
+ARG TARGETARCH
+RUN set -eux; \
+    case "${TARGETARCH}" in \
+      amd64) triple=x86_64-unknown-linux-gnu; sha="${UV_SHA256_AMD64}";; \
+      arm64) triple=aarch64-unknown-linux-gnu; sha="${UV_SHA256_ARM64}";; \
+      *) echo "unsupported arch: ${TARGETARCH}"; exit 1;; \
+    esac; \
+    mkdir -p "$HOME/.local/bin"; \
+    curl -fsSL -o uv.tar.gz "https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/uv-${triple}.tar.gz"; \
+    echo "${sha}  uv.tar.gz" | sha256sum -c -; \
+    tar -xzf uv.tar.gz; \
+    install "uv-${triple}/uv" "uv-${triple}/uvx" "$HOME/.local/bin/"; \
+    rm -rf uv.tar.gz "uv-${triple}"
 
-# Installing Claude Code CLI using the official native installer
-# Native installer is recommended over npm (npm install is deprecated)
-# Installs to ~/.local/bin/claude which is already in PATH
-RUN curl -fsSL https://claude.ai/install.sh | bash
+# Installing Claude Code CLI from a pinned version with checksum verification.
+# We bypass install.sh (which always pulls latest) to pin the version for reproducibility.
+# Checksums are from the official release manifest.json.
+ARG CLAUDE_VERSION=2.1.177
+ARG CLAUDE_SHA256_AMD64=ff41753634b20c869ef6a32a20863521b33d4186ac0d6a49379ab48a48395ee7
+ARG CLAUDE_SHA256_ARM64=baf3926dc166215772f959e367da9784ff4c75157aaafe4524fdc79ebff984b1
+RUN set -eux; \
+    case "${TARGETARCH}" in \
+      amd64) platform=linux-x64; sha="${CLAUDE_SHA256_AMD64}";; \
+      arm64) platform=linux-arm64; sha="${CLAUDE_SHA256_ARM64}";; \
+      *) echo "unsupported arch: ${TARGETARCH}"; exit 1;; \
+    esac; \
+    mkdir -p "$HOME/.local/bin"; \
+    curl -fsSL -o claude "https://downloads.claude.ai/claude-code-releases/${CLAUDE_VERSION}/${platform}/claude"; \
+    echo "${sha}  claude" | sha256sum -c -; \
+    install claude "$HOME/.local/bin/claude"; \
+    rm claude
 
 # Adding the user's local bin directory to PATH for installed tools
 ENV PATH=/home/vscode/.local/bin:$PATH

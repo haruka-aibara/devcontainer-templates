@@ -9,19 +9,6 @@
   // Executes commands after container creation to set up the development environment
   // The post-create.sh script can install additional dependencies or configure settings
   "postCreateCommand": "bash ./.devcontainer/post-create.sh",
-  // Mount specific host directories into the container with appropriate permissions
-  // These read-only mounts ensure security while providing access to necessary credentials
-  "mounts": [
-    // Mount AWS credentials from host to container to enable AWS CLI and SDK functionality
-    // Read-only access prevents accidental modification of credentials from within the container
-    "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind,readonly",
-    // Mount Google Cloud credentials from host to container to enable gcloud CLI functionality
-    // Mounted writable (not readonly) because gcloud needs to refresh access tokens and write logs
-    "source=${localEnv:HOME}/.config/gcloud,target=/home/vscode/.config/gcloud,type=bind",
-    // Mount Git configuration to maintain consistent commit identity across environments
-    // Read-only to ensure container operations cannot modify your global Git settings
-    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,readonly"
-  ],
   // Specifies the username to use when connecting to the container
   // This enhances security by avoiding running as root and matches with Dockerfile user
   "remoteUser": "vscode",
@@ -44,7 +31,6 @@
         "shd101wyy.markdown-preview-enhanced", // Advanced Markdown preview with extra features
         "bierner.markdown-mermaid", // Adds Mermaid diagram support to Markdown files
         "darkriszty.markdown-table-prettify", // Transforms markdown tables to be more readable.
-        "marp-team.marp-vscode", // Marp for creating presentations with Markdown
         // Code formatting
         "esbenp.prettier-vscode", // Prettier code formatter for consistent code style
         // Python development ecosystem - comprehensive set of tools for quality code
@@ -125,9 +111,7 @@
         },
         "[markdown]": {
           "editor.defaultFormatter": "darkriszty.markdown-table-prettify" // Uses markdown-table-prettify for Markdown
-        },
-        "markdown.marp.pptx.editable": "on", // Enables editing Marp PPTX files
-        "markdown.marp.exportType": "pptx" // Sets default Marp export type to PPTX
+        }
       }
     }
   },
@@ -136,9 +120,12 @@
     // Docker-in-Docker capability to run Docker commands inside the container
     // Essential for CI/CD workflows and container-based development
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
-      "version": "latest", // Uses the latest Docker version available
       "moby": true, // Uses the open-source Moby engine instead of Docker CE
       "dockerDashComposeVersion": "v2" // Specifies Docker Compose v2 for modern container orchestration
-    }
+    },
+    "ghcr.io/devcontainers/features/aws-cli:1": {},
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/python:1": {}
   }
 }

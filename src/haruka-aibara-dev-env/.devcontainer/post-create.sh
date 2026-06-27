@@ -8,8 +8,10 @@
 
 # Enable strict error handling to catch issues early
 # set -e: Exit immediately if any command exits with a non-zero status
+# set -u: Treat unset variables as errors
+# set -o pipefail: Return value of a pipeline is the value of the last command to exit non-zero
 # trap: Display location of any errors to aid in troubleshooting
-set -e
+set -euo pipefail
 trap 'echo "ERROR: Command failed at line $LINENO"' ERR
 
 echo "Running post-create setup..."
@@ -40,6 +42,10 @@ echo "Step 3: Installing testing tools..."
 # uvx pytest test_xxx.py -v
 uv tool install pytest        # Feature-rich testing framework for Python
 
+# Ansible (managed via uv instead of apt)
+uv tool install ansible-core  # Core Ansible automation engine
+uv tool install ansible-lint  # Best practice linter for Ansible playbooks
+
 # =============================================================================
 # Terraform Environment Configuration
 # =============================================================================
@@ -57,6 +63,8 @@ tenv tf use latest-stable
 TF_VERSION=$(cat ~/.tenv/Terraform/version)
 export PATH="${HOME}/.tenv/Terraform/${TF_VERSION}:${PATH}"
 echo '# tenv - Terraform version management' >> ~/.bashrc
+# shellcheck disable=SC2016
+# Intentional: single quotes write a literal $(cat ...) that expands at shell runtime (not now)
 echo 'export PATH="${HOME}/.tenv/Terraform/$(cat ${HOME}/.tenv/Terraform/version):${PATH}"' >> ~/.bashrc
 
 # =============================================================================
