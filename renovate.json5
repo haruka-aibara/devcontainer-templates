@@ -1,0 +1,84 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+
+  // 週1回月曜 JST 9:00 にまとめて更新 PR を作る
+  "schedule": ["before 9am on Monday"],
+  "timezone": "Asia/Tokyo",
+
+  // PR をグループ化して通知を減らす
+  "groupName": "devcontainer dependencies",
+
+  // GitHub Actions: uses: actions/checkout@v4 等を追跡
+  "github-actions": {
+    "enabled": true
+  },
+
+  // devcontainer Features: devcontainer.json + devcontainer-lock.json を追跡
+  "devcontainer": {
+    "enabled": true
+  },
+
+  // Docker カテゴリを有効化
+  "packageRules": [
+    {
+      "matchCategories": ["docker"],
+      "enabled": true
+    }
+  ],
+
+  "customManagers": [
+    // base image digest (ARG BASE_IMAGE=...@sha256:...)
+    {
+      "customType": "regex",
+      "fileMatch": ["^src/.*/\\.devcontainer/Dockerfile$"],
+      "matchStrings": [
+        "ARG BASE_IMAGE=(?<depName>[^@\\n]+)@(?<currentDigest>sha256:[a-f0-9]+)"
+      ],
+      "currentValueTemplate": "latest",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
+    },
+    // tenv バージョン
+    {
+      "customType": "regex",
+      "fileMatch": ["^src/.*/\\.devcontainer/Dockerfile$"],
+      "matchStrings": [
+        "ARG TENV_VERSION=(?<currentValue>v[\\d.]+)"
+      ],
+      "depNameTemplate": "tofuutils/tenv",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
+    },
+    // uv バージョン
+    {
+      "customType": "regex",
+      "fileMatch": ["^src/.*/\\.devcontainer/Dockerfile$"],
+      "matchStrings": [
+        "ARG UV_VERSION=(?<currentValue>[\\d.]+)"
+      ],
+      "depNameTemplate": "astral-sh/uv",
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver",
+      "extractVersionTemplate": "^v?(?<version>.*)$"
+    },
+    // claude バージョン (npm パッケージ @anthropic-ai/claude-code でバージョン追跡)
+    {
+      "customType": "regex",
+      "fileMatch": ["^src/.*/\\.devcontainer/Dockerfile$"],
+      "matchStrings": [
+        "ARG CLAUDE_VERSION=(?<currentValue>[\\d.]+)"
+      ],
+      "depNameTemplate": "@anthropic-ai/claude-code",
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "semver"
+    }
+  ],
+
+  // VERSION ARG が更新されたら SHA も更新が必要な旨を PR に注記
+  "prBodyNotes": [
+    "**tenv / uv / claude のバージョンが更新された場合:** `bash scripts/update-tool-shas.sh` を実行して SHA256 を更新してください。"
+  ]
+}
