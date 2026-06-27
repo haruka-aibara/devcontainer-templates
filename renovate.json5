@@ -35,7 +35,7 @@
       "customType": "regex",
       "fileMatch": ["^src/.*/\\.devcontainer/Dockerfile$"],
       "matchStrings": [
-        "ARG BASE_IMAGE=(?<depName>[^@\\n]+)@sha256:(?<currentDigest>[a-f0-9]+)"
+        "ARG BASE_IMAGE=(?<depName>[^@\\n]+)@(?<currentDigest>sha256:[a-f0-9]+)"
       ],
       "currentValueTemplate": "latest",
       "datasourceTemplate": "docker",
